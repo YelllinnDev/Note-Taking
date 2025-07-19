@@ -15,6 +15,7 @@ php artisan db:seed
 
 php artisan serve
 
+
 # open localhost:8000/admin 
 # login using 
 # email : admin@mail.com
