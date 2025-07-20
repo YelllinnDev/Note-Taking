@@ -46,7 +46,8 @@ class NoteController extends Controller
                 'message' => 'No records found for this user.'
             ], 404);
         }
-        $note = $query->paginate($perPage, ['*'], 'page', $page);
+        $note = $query->orderBy('id', 'DESC')
+                        ->paginate($perPage, ['*'], 'page', $page);
         // return $exRecord;
 
         if ($note->isEmpty()) {
