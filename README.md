@@ -13,8 +13,15 @@ php artisan migrate:fresh
 php artisan db:seed
 
 
-php artisan serve
-
+php artisan serve 
+```
+## JWT Case
+```bash 
+composer require tymon/jwt-auth
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+php artisan jwt:secret
+put this secret key to bottom  .env file like 
+example:JWT_SECRET=7xLpaztJuBncwiT56m9qZ4kMFdX3sueKYnd03gxrPQy8NKDH3vLUmoZcWhY9uzta
 
 # open localhost:8000/admin 
 # login using 
