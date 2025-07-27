@@ -10,29 +10,33 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Passport\HasApiTokens;
+use Laravel\Passport\Contracts\Authenticatable as PassportAuthenticatable;
+
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject, FilamentUser
+class User extends Authenticatable implements  FilamentUser
 {
+    use HasApiTokens, HasFactory, Notifiable;
     protected $fillable = [
         'name',
         'email',
         'password',
         'role_id',
     ];
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
+    // public function getJWTIdentifier()
+    // {
+    //     return $this->getKey();
+    // }
 
-    public function getJWTCustomClaims()
-    {
-        return [
-            'role_id' => $this->role_id,
-            'name' => $this->name,
-        ];
-    }
+    // public function getJWTCustomClaims()
+    // {
+    //     return [
+    //         'role_id' => $this->role_id,
+    //         'name' => $this->name,
+    //     ];
+    // }
     public function role()
     {
         return $this->belongsTo(Role::class);
