@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -52,7 +52,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        if(auth()->attempt($credentials)){
+        if(Auth::attempt($credentials)){
             $user = User::where('email', $credentials['email'])
                         ->first();
 
@@ -81,38 +81,5 @@ class AuthController extends Controller
         }
 
         return response()->json(['error' => 'Invalid credentials'], 401);
-
-
-        $credentials = $request->only('email', 'password');
-        
-        // Try to create token
-        if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
-        $user = User::where('email', $credentials['email'])
-                        ->first();
-
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            return response()->json([
-                "message"=>"Login was successful.",
-                "data"=>[
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role_id' => $user->role->id,
-                    'role' => $user->role->name ?? null,
-                    'created_at' => $user->created_at,
-                    'updated_at' => $user->updated_at,
-                    'access_token' => $token,
-                    'token_type' => 'Bearer',
-                ]
-                
-            ]);
-        } else {
-           return response()->json([
-                'message' => 'Password is incorrect.'
-            ], 404);
-        }
-        
     }
 }

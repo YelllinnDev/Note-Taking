@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Note; 
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
     public function index(Request $request){
-        $user  = get_authenticated_user();
-        if ($user instanceof \Illuminate\Http\JsonResponse) {
-            return $user;
-        }
+        // $user  = get_authenticated_user();
+        // if ($user instanceof \Illuminate\Http\JsonResponse) {
+        //     return $user;
+        // }
+        $user = Auth::user();
         $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|text',
@@ -23,7 +25,7 @@ class NoteController extends Controller
         ]);
         $perPage = 2;
         $page = $request->input('page', 1);
-        $query = Note::where('user_id', $user);
+        $query = Note::where('user_id', $user->id);
         if(!$query->exists()){
             return response()->json([
                 'message' => 'No notes found for this user.'
@@ -66,11 +68,8 @@ class NoteController extends Controller
 
     }
     public function detail(Request $request, $id){
-        $usercase  = get_authenticated_user();
-        if ($usercase instanceof \Illuminate\Http\JsonResponse) {
-            return $usercase;
-        }
-        $user=$usercase["user_id"];
+        $usercase = Auth::user();
+        $user=$usercase->id;
         $perPage = 2;
         $page = $request->input('page', 1);
         $query = Note::where('id', $id)
@@ -99,12 +98,10 @@ class NoteController extends Controller
     }
     public function store(Request $request)
     {
-        $usercase  = get_authenticated_user();
-        if ($usercase instanceof \Illuminate\Http\JsonResponse) {
-            return $usercase;
-        }
-        $user=$usercase["user_id"];
-        $role=$usercase["role_id"];
+        
+        $usercase = Auth::user();
+        $user=$usercase->id;
+        $role=$usercase->role_id;
         if($role==1){
             return response()->json([
                             'error' => 'Something went wrong',
@@ -145,13 +142,8 @@ class NoteController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Optional: Get authenticated user (if categories are user-owned)
-            $usercase  = get_authenticated_user();
-            if ($usercase instanceof \Illuminate\Http\JsonResponse) {
-                return $usercase;
-            }
-            $user=$usercase["user_id"];
-           
+            $usercase = Auth::user();
+            $user=$usercase->id;
 
             // Validate the request
            $validated = $request->validate([
@@ -206,13 +198,8 @@ class NoteController extends Controller
     public function destroy($id)
     {
         try {
-            // Get authenticated user
-            $usercase  = get_authenticated_user();
-            if ($usercase instanceof \Illuminate\Http\JsonResponse) {
-                return $usercase;
-            }
-            $user=$usercase["user_id"];
-
+            $usercase = Auth::user();
+            $user=$usercase->id;
             // Find the category that belongs to the user
             $note = Note::where('id', $id)
                             ->where('user_id', $user)
