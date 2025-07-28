@@ -1,6 +1,25 @@
 # Note Taking Project
 
+## 2025-07-28 Test up and running
 
+
+### API Check Section
+
+- [x] user registration
+- [x] user login
+- [x] list of notes
+- [x] note create
+- [x] note update
+- [x] note delete
+
+
+php artisan passport:keys
+
+
+php artisan passport:install
+after that you run this:
+
+php artisan passport:keys --force
 
 ## First Time Setup Code
 
