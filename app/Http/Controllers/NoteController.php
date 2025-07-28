@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Note; 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
 {
@@ -23,13 +24,19 @@ class NoteController extends Controller
             ], [
                 'date.date' => 'Date must be a valid date.YYYY-MM-DD',
         ]);
+
+        
+
+        // TODO: return validation error detail
+
         $perPage = 2;
         $page = $request->input('page', 1);
         $query = Note::where('user_id', $user->id);
         if(!$query->exists()){
             return response()->json([
-                'message' => 'No notes found for this user.'
-            ], 404);
+                'message' => 'No notes found for this user.',
+                'data' => []
+            ], 200);
         }
         // return $query->get();
          if (isset($validated['title'])) {
@@ -45,8 +52,9 @@ class NoteController extends Controller
 
         if (!$query->exists()) {
             return response()->json([
-                'message' => 'No records found for this user.'
-            ], 404);
+                'message' => 'No records found for this user.',
+                'data' => []
+            ], 200);
         }
         $note = $query->orderBy('id', 'DESC')
                         ->paginate($perPage, ['*'], 'page', $page);

@@ -5,15 +5,21 @@
 
 ### API Check Section
 
-- [ ] user registration
-- [ ] user login
-- [ ] list of notes
-- [ ] note create
-- [ ] note update
-- [ ] note delete
+- [x] user registration
+- [x] user login
+- [x] list of notes
+- [x] note create
+- [x] note update
+- [x] note delete
 
 
+php artisan passport:keys
 
+
+php artisan passport:install
+after that you run this:
+
+php artisan passport:keys --force
 
 ## First Time Setup Code
 
