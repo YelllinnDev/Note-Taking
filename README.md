@@ -1,5 +1,18 @@
 # Note Taking Project
 
+## 2025-07-28 Test up and running
+
+
+### API Check Section
+
+- [ ] user registration
+- [ ] user login
+- [ ] list of notes
+- [ ] note create
+- [ ] note update
+- [ ] note delete
+
+
 
 
 ## First Time Setup Code
