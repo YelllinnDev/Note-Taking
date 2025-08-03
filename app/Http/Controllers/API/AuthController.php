@@ -48,6 +48,7 @@ class AuthController extends Controller
             ]
         ], 201);
     }
+    
      
     public function login(Request $request)
     {

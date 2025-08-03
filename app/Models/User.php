@@ -41,6 +41,11 @@ class User extends Authenticatable implements  FilamentUser
     {
         return $this->belongsTo(Role::class);
     }
+    public function note()
+    {
+        return $this->hasMany(Note::class);
+    }
+
 
      public function canAccessPanel(Panel $panel): bool
     {

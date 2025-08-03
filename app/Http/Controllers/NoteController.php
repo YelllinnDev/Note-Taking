@@ -8,15 +8,13 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Note; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class NoteController extends Controller
 {
     public function index(Request $request){
-        // $user  = get_authenticated_user();
-        // if ($user instanceof \Illuminate\Http\JsonResponse) {
-        //     return $user;
-        // }
         $user = Auth::user();
+        $role_id= $user->role_id;
         $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|text',
@@ -24,21 +22,10 @@ class NoteController extends Controller
             ], [
                 'date.date' => 'Date must be a valid date.YYYY-MM-DD',
         ]);
-
-        
-
-        // TODO: return validation error detail
-
-        $perPage = 2;
+        $perPage = 10;
         $page = $request->input('page', 1);
-        $query = Note::where('user_id', $user->id);
-        if(!$query->exists()){
-            return response()->json([
-                'message' => 'No notes found for this user.',
-                'data' => []
-            ], 200);
-        }
-        // return $query->get();
+        $query = Note::select('id','title', 'description', 'user_id', 'date', 'created_at')
+                        ->with("user");
          if (isset($validated['title'])) {
             $query->where('title', $validated['title']);
         }
@@ -50,75 +37,15 @@ class NoteController extends Controller
             $query->where('date', $validated['date']);
         }
 
-        if (!$query->exists()) {
-            return response()->json([
-                'message' => 'No records found for this user.',
-                'data' => []
-            ], 200);
-        }
-        $note = $query->orderBy('id', 'DESC')
-                        ->paginate($perPage, ['*'], 'page', $page);
-        // return $exRecord;
-
-        if ($note->isEmpty()) {
-            return response()->json([
-                'message' => 'No record found',
-            ], 422);
-        }
-
-        return response()->json([
-            'message' => 'Note list',
-            'data' => $note->items(),
-            'total' => $note->total(),
-            'current_page' => $note->currentPage(),
-            'last_page' => $note->lastPage(),
-        ]);
-
-    }
-    public function detail(Request $request, $id){
-        $usercase = Auth::user();
-        $user=$usercase->id;
-        $perPage = 2;
-        $page = $request->input('page', 1);
-        $query = Note::where('id', $id)
-                        ->where('user_id', $user);
-                        // ->firstOrFail();
-        if(!$query->exists()){
-            return response()->json([
-                'message' => 'No notes found for this user.'
-            ], 404);
-        }
-        $note = $query->paginate($perPage, ['*'], 'page', $page);
-
-        if ($note->isEmpty()) {
-            return response()->json([
-                'message' => 'No record found',
-            ], 422);
-        }
-        return response()->json([
-            'message' => 'Note',
-            'data' => $note->items(),
-            'total' => $note->total(),
-            'current_page' => $note->currentPage(),
-            'last_page' => $note->lastPage(),
-        ]);
-
+        $note = $query->orderBy('id', 'DESC')->paginate($perPage);
+        return view('notes.index', ['notes' => $note]);
     }
     public function store(Request $request)
     {
-        
-        $usercase = Auth::user();
-        $user=$usercase->id;
-        $role=$usercase->role_id;
-        if($role==1){
-            return response()->json([
-                            'error' => 'Something went wrong',
-                            'message' => "Sorry, your role does not have permission to create notes.",
-                            // 'line' => $e->getLine(),
-                        ], 400);
-        }
-        try {
-           $validated = $request->validate([
+        try{
+            $usercase = Auth::user();
+            $user=$usercase->id;
+            $validated = $request->validate([
                 'title' => 'required|string',
                 'description' => 'required|string|max:255',
                 'date' => 'required|date_format:Y-m-d',
@@ -134,27 +61,20 @@ class NoteController extends Controller
                 'user_id' => $user,
                 'date' => $validated['date'],
             ]);
+           
+            session()->flash('success', 'Note created successfully.');
+            return redirect()->route('notes.index');
 
-            return response()->json([
-                'message' => 'Note is created successfully!',
-                'data' => $note
-            ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Something went wrong',
-                'message' => $e->getMessage(),
-                // 'line' => $e->getLine(),
-            ], 400);
+            // Flash error message if something fails
+            session()->flash('error', 'Note creation failed. Please try again.');
+            return redirect()->back(); // Go back to the previous page
         }
     }
     public function update(Request $request, $id)
     {
-        try {
-            $usercase = Auth::user();
-            $user=$usercase->id;
-
-            // Validate the request
-           $validated = $request->validate([
+        try{
+            $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|string|nullable',
                 'date' => 'required|date_format:Y-m-d',
@@ -163,77 +83,47 @@ class NoteController extends Controller
                 'date.date' => 'Date must be a valid date.(YYYY-MM-DD)',
             ]);
 
-            
-            // Find the category
-            $note = Note::where('id', $id)
-                            ->where('user_id', $user)
-                            ->firstOrFail();
-            
-            if (!$note->exists()) {
-                return response()->json([
-                    'message' => 'No notes found for this user.'
-                ], 404);
+            // Find the user by ID
+            $note = Note::findOrFail($id);
+
+            // If password is provided, hash and update it
+            if ($request->filled('password')) {
+                $note->password = Hash::make($request->password);
             }
-            // Update the category
+
+            // Update the user's information (except password if not provided)
             $note->update($validated);
 
-            return response()->json([
-                'message' => 'Note is updated successfully.',
-                'data' => [
-                    'id' => $note->id,
-                    'user_id' => $note->user_id,
-                    'title' => $note->title,
-                    'description' => $note->description,
-                    'date' => $note->date,
-                    'created_at' => $note->created_at,
-                    'updated_at' => $note->updated_at,
-                ]
-            ], 200);
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'error' => 'Update failed.',
-                'message' => 'No data found!',
-            ], 404);
+            // Redirect to the list page with a success message and paginated results
+            return redirect()->route('notes.index', ['page' => $request->input('page', 1)])
+                            ->with('success', 'Note updated successfully!');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Update failed.',
-                'message' => $e->getMessage(),
-            ], 400);
+            // Flash error message if something fails
+            session()->flash('error', 'Updating failed. Please try again.');
+            return redirect()->back(); // Go back to the previous page
         }
+    }
+    public function edit(Request $request, $id)
+    {
+            // Find the user by ID or fail if not found
+        $note = Note::findOrFail($id);
+        
+        // Return the edit view and pass the user data to it
+        return view('notes.edit', compact('note'));
     }
     public function destroy($id)
     {
+        $note = Note::find($id);
+        if (!$note) {
+            return redirect()->route('notes.index')->with('error', 'Note not found');
+        }
+
         try {
-            $usercase = Auth::user();
-            $user=$usercase->id;
-            // Find the category that belongs to the user
-            $note = Note::where('id', $id)
-                            ->where('user_id', $user)
-                            ->firstOrFail();
-            // Delete it
-             if (!$note->exists()) {
-                return response()->json([
-                    'message' => 'No notes found for this user.'
-                ], 404);
-            }
             $note->delete();
-
-            return response()->json([
-                'message' => 'Note is deleted successfully.'
-            ], 200);
-         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'error' => 'Delete failed.',
-                'message' => 'No data found!',
-            ], 404);
-
+            return redirect()->route('notes.index')->with('success', 'Note deleted successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Delete failed.',
-                'message' => $e->getMessage()
-            ], 400);
+            return redirect()->route('notes.index')->with('error', 'Failed to delete note. Please try again.');
         }
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51a036abc62066bf964f8706527d8014",
+    "content-hash": "ee97cd43c1e0f4cdfadad70796eaaf48",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8657,6 +8657,61 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.1.1"
             },
             "time": "2025-04-30T06:54:44+00:00"
+        },
+        {
+            "name": "laravel/breeze",
+            "version": "v2.3.7",
+            "dist": {
+                "type": "zip",
+                "url": "https://mirrors.cloud.tencent.com/repository/composer/laravel/breeze/v2.3.7/laravel-breeze-v2.3.7.zip",
+                "reference": "73149b5d84be3881b2fdda94b2ad289e7905c1a4",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^11.0|^12.0",
+                "illuminate/filesystem": "^11.0|^12.0",
+                "illuminate/support": "^11.0|^12.0",
+                "illuminate/validation": "^11.0|^12.0",
+                "php": "^8.2.0",
+                "symfony/console": "^7.0"
+            },
+            "require-dev": {
+                "laravel/framework": "^11.0|^12.0",
+                "orchestra/testbench-core": "^9.0|^10.0",
+                "phpstan/phpstan": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Breeze\\BreezeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Breeze\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Minimal Laravel authentication scaffolding with Blade and Tailwind.",
+            "keywords": [
+                "auth",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/breeze/issues",
+                "source": "https://github.com/laravel/breeze"
+            },
+            "time": "2025-06-17T13:07:20+00:00"
         },
         {
             "name": "laravel/pail",
