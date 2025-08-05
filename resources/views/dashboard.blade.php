@@ -159,7 +159,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach( $totals['records'] as $record)
+                    @forelse( $totals['records'] as $record)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $record->name }}</td>
@@ -167,7 +167,11 @@
                         <td>{{ $record->role->name }}</td>
                         <td>{{ $record->created_at }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center">No notes found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
          @else
@@ -183,7 +187,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach( $totals['records'] as $record)
+                    @forelse( $totals['records'] as $record)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $record->title }}</td>
@@ -191,23 +195,29 @@
                         <td>{{ $record->date }}</td>
                         <td>{{ $record->created_at }}</td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center">No notes found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         @endif
+        
     @endauth
     
 </div>
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@push('scripts')
+<script src="/jquerycase/jquery.js"></script>
 <script>
-    // Highlight row on click
-    $('table tbody tr').on('click', function () {
-        $('table tbody tr').removeClass('highlight');
-        $(this).addClass('highlight');
-    });
+    $(document).ready(function(){
+        ('table tbody tr').on('click', function () {
+            $('table tbody tr').removeClass('highlight');
+            $(this).addClass('highlight');
+        });
+    })
 </script>
+@endpush
 
 </body>
 </html>

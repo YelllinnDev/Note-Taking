@@ -1,69 +1,152 @@
 @extends('layouts.guest')
 
 @section('content')
-<div class="container py-5">
-    <div class="row justify-content-center ">
-        <div class="col-md-6 bg-white rounded-12">
+<style>
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        background-color: #f2f2f2;
+    }
 
-            <h2 class="mb-4 text-center mt-5">Login</h2>
+    .login-box {
+        background-color: #fff;
+        padding: 2rem;
+        width:400px;
+        min-width:400px;
+        max-width: 400px;
+        width: 100%;
+        border-radius: 6px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
 
-            <!-- Session Status -->
-            @if (session('status'))
-                <div class="alert alert-success mb-4">
-                    {{ session('status') }}
-                </div>
-            @endif
+    .login-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
 
-            <form method="POST" action="{{ route('login') }}" class="mb-5">
-                @csrf
+    .form-group {
+        margin-bottom: 1rem;
+    }
 
-                <!-- Email Address -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">{{ __('Email address') }}</label>
-                    <input id="email" type="email"
-                           class="form-control @error('email') is-invalid @enderror"
-                           name="email" value="{{ old('email') }}" required autofocus>
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
 
-                    @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+    .form-group input[type="email"],
+    .form-group input[type="password"] {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 
-                    <small class="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
+    .input-error {
+        border-color: red;
+    }
 
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="password" class="form-label">{{ __('Password') }}</label>
-                    <input id="password" type="password"
-                           class="form-control @error('password') is-invalid @enderror"
-                           name="password" required>
+    .error {
+        color: red;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
 
-                    @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+    .note {
+        font-size: 0.8rem;
+        color: #666;
+    }
 
-                <!-- Remember Me -->
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" name="remember" id="remember">
-                    <label class="form-check-label" for="remember">{{ __('Remember Me') }}</label>
-                </div>
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    @if (Route::has('password.request'))
-                        <a class="small text-decoration-none" href="{{ route('password.request') }}">
-                            {{ __('Forgot your password?') }}
-                        </a>
-                    @endif
-                </div>
+    .form-footer {
+        text-align: right;
+        margin-bottom: 1rem;
+    }
 
-                <!-- Submit -->
-                <button type="submit" class="btn btn-primary w-100">
-                    {{ __('Log in') }}
-                </button>
-            </form>
+    .btn-submit {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 
-        </div>
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+
+    .alert.success {
+        padding: 0.75rem;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+</style>
+<div class="login-wrapper">
+    <div class="login-box">
+        <h2 class="login-title">Login</h2>
+
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+
+            {{-- Email --}}
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input id="email" type="email" name="email" required autofocus
+                       value="{{ old('email') }}"
+                       class="@error('email') input-error @enderror">
+
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+
+                <small class="note">We'll never share your email with anyone else.</small>
+            </div>
+
+            {{-- Password --}}
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" required
+                       class="@error('password') input-error @enderror">
+
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Remember Me --}}
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember Me</label>
+            </div>
+
+            {{-- Forgot Password --}}
+            <div class="form-footer">
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}">Forgot your password?</a>
+                @endif
+            </div>
+
+            {{-- Submit --}}
+            <button type="submit" class="btn-submit">Log in</button>
+        </form>
     </div>
 </div>
 @endsection

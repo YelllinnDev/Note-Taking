@@ -95,7 +95,7 @@
 
         <div class="form-group">
             <label for="date">Remind Date</label>
-            <input type="date" id="date" name="date" required />
+            <input type="date" id="date" name="date" />
         </div>
 
         <button type="submit">Save Note</button>

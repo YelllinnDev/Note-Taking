@@ -93,13 +93,13 @@ class AuthController extends Controller
                         'email' => 'required|string|email|unique:users,email',
                         'password' => 'required|string|min:6|confirmed',
                         'password_confirmation' => 'required|string|min:6',
-                        'role_id'=>'required|integer|exists:roles,id'
+                        'role_id'=>'nullable|integer|exists:roles,id'
                     ]);
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role_id' => $request->role_id,
+                'role_id' => $request->role_id ?? 2,
             ]);
            
             session()->flash('success', 'Registration is successful.');
@@ -108,7 +108,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             // Flash error message if something fails
             session()->flash('error', 'Registration failed. Please try again.');
-            return redirect()->back(); // Go back to the previous page
+            return redirect()->back()->withInput();
         }
         
     }
@@ -140,7 +140,7 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         // Redirect the user to the welcome page (or your desired page)
-        return redirect('welcome');
+        return redirect('/');
     }
     public function showRegistrationForm(){
         $roles = Role::all();  // Assuming 'Role' is your model for roles table
@@ -169,6 +169,7 @@ class AuthController extends Controller
             $totalNotes     =   Note::where('user_id', $user->id)->count();
             $recentNotes     =   Note::select('id','title', 'description', 'user_id', 'date', 'created_at')
                                     ->with('user')
+                                    ->where('user_id',$user->id)
                                     ->limit(5) 
                                     ->get(); 
 

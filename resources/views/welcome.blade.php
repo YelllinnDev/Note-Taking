@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Welcome | {{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
     <style>
         * {
@@ -156,7 +157,15 @@
             background-color: #fff;
             border-top: 1px solid #ddd;
         }
-
+        .btn{
+            border:1px solid #0d6efd !important;
+            border-radius: 3px;
+            transition:0.5s;
+        }
+        .btn:hover{
+            background-color: #0d6efd;
+            color:whitesmoke;
+        }
         /* Responsive */
         @media (max-width: 768px) {
             .feature-grid {
@@ -165,9 +174,6 @@
             }
         }
     </style>
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
@@ -175,18 +181,18 @@
     <nav class="navbar">
         <div class="brand">{{ config('app.name', 'Laravel') }}</div>
         <ul>
-            <li><a href="#">Home</a></li>
+            <!-- <li><a href="#">Home</a></li>
             <li><a href="#">Features</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="{{ route('login') }}">Login</a></li>
-            <li><a class="btn-primary" href="{{ route('register') }}">Register</a></li>
+            <li><a href="#">Pricing</a></li> -->
+            <li><a class="btn" href="{{ route('login') }}">Login</a></li>
+            <li><a class="btn" href="{{ route('register') }}">Register</a></li>
         </ul>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
         <h1>Welcome to {{ config('app.name', 'Laravel') }}</h1>
-        <p>Build modern web applications faster and easier with Laravel.</p>
+        <p>"We turn your ideas into modern web applications, quickly and effortlessly."</p>
         <a href="{{ route('register') }}" class="btn">Get Started</a>
     </section>
 
@@ -196,15 +202,15 @@
         <div class="feature-grid">
             <div class="card">
                 <h5>Fast Development</h5>
-                <p>Rapidly create robust apps with Laravel’s expressive syntax and tools.</p>
+                <p>We streamline the development process so you can launch your robust, high‑performance apps in record time.</p>
             </div>
             <div class="card">
-                <h5>Secure & Scalable</h5>
-                <p>Built-in features like authentication and CSRF protection keep your app safe.</p>
+                <h5>Modern Technology</h5>
+                <p>Our stack uses the latest frameworks and best practices to keep your app secure, efficient, and ahead of the curve.</p>
             </div>
             <div class="card">
-                <h5>Modern Tools</h5>
-                <p>Blade, Vite, Eloquent ORM, and powerful CLI for ultimate developer experience.</p>
+                <h5>Expert Support</h5>
+                <p>From planning to deployment, our team is here to ensure every step of your journey is smooth and successful.</p>
             </div>
         </div>
     </section>
@@ -212,7 +218,7 @@
     <!-- CTA Section -->
     <section class="cta">
         <h2>Ready to get started?</h2>
-        <p>Join thousands of developers building with Laravel every day.</p>
+        <p>"Join the community — thousands building better notes together."</p>
         <a href="{{ route('register') }}" class="btn-primary">Create Your Account</a>
     </section>
 
