@@ -24,8 +24,15 @@ class NoteController extends Controller
         ]);
         $perPage = 10;
         $page = $request->input('page', 1);
-        $query = Note::select('id','title', 'description', 'user_id', 'date', 'created_at')
+        if( $role_id===1){
+            $query = Note::select('id','title', 'description', 'user_id', 'date', 'created_at')
                         ->with("user");
+        }else{
+            $query = Note::select('id','title', 'description', 'user_id', 'date', 'created_at')
+                                    ->with("user")
+                                    ->where("user_id",$user->id);
+        }
+        
          if (isset($validated['title'])) {
             $query->where('title', $validated['title']);
         }
@@ -48,18 +55,17 @@ class NoteController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string',
                 'description' => 'required|string|max:255',
-                'date' => 'required|date_format:Y-m-d',
+                'date' => 'sometimes|nullable|date_format:Y-m-d',
             ], [
                 'title.required' => 'Title is required.',
                 'title.string' => 'Title must be a string.',
-                'description.required' => 'description is required.',
-                'date.required' => 'Date is required.',
+                'description.required' => 'Description is required.',
             ]);
-            $note = Note::create([
+            Note::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'user_id' => $user,
-                'date' => $validated['date'],
+                'date' => $validated['date'] ?? null, // safe fallback
             ]);
            
             session()->flash('success', 'Note created successfully.');

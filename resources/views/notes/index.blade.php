@@ -143,9 +143,9 @@
                     @endauth
                    
                 </tr>
-            @empty
+                @empty
                 <tr>
-                    <td colspan="5">No notes found.</td>
+                    <td colspan="7" style="text-align:center">No notes found.</td>
                 </tr>
             @endforelse
         </tbody>

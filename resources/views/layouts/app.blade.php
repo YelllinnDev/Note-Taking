@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>@yield('title', 'Dashboard') | {{ config('app.name', 'Laravel') }}</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
 
   <style>
     :root {
@@ -42,6 +44,7 @@
       border-right: 1px solid #e2e8f0;
       transition: all 0.3s ease;
       z-index: 999;
+      min-width:200px;
     }
 
     .sidebar-heading {
@@ -76,10 +79,10 @@
       color: white;
     }
 
-    .nav-links i {
-      font-size: 18px;
+    .nav-links  img{
+      width:25px;
+      height:25px;
     }
-
     /* Page Content */
     #page-content-wrapper {
       flex-grow: 1;
@@ -126,10 +129,17 @@
     button.logout-btn {
       background: none;
       border: none;
-      color: var(--primary);
+      color:var(--background);
       cursor: pointer;
       font-size: 14px;
+      padding:8px;
+      border-radius: 5px;
+      transition:0.5s;
+      background-color: #e03636ff;
     }
+     button.logout-btn:hover{
+      background-color: #f80b0bff;
+     }
 
     .main-content {
       padding: 30px;
@@ -142,17 +152,18 @@
         display: block;
       }
 
-      #sidebar-wrapper {
+      /* #sidebar-wrapper {
         position: absolute;
-        left: -260px;
+        left: 0;
         top: 0;
+        width:150px;
         height: 100%;
         box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      }
+      } */
 
-      #wrapper.toggled #sidebar-wrapper {
+      /* #wrapper.toggled #sidebar-wrapper {
         left: 0;
-      }
+      } */
     }
     .alert{
       position:fixed;
@@ -250,18 +261,18 @@
       </div>
       <div class="nav-links">
         <a href="{{ route('dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">
-          <i>&#127968;</i> Dashboard
+          <img src="{{ asset('images/dash.png') }}" alt=""> Dashboard
         </a>
         @auth
           @if (auth()->check() && auth()->user()->role_id === 1)
                 <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">
-                  <i>&#128101;</i> Users
+                  <img src="{{ asset('images/user.png') }}" alt=""> Users
                 </a>
           @endif
         @endauth
         
         <a href="{{ route('notes.index') }}" class="{{ request()->is('notes*') ? 'active' : '' }}">
-          <i>&#9881;</i> Notes
+          <img src="{{ asset('images/note.png') }}" alt=""> Notes
         </a>
       </div>
     </div>
@@ -288,38 +299,34 @@
       </div>
     </div>
   </div>
+@push('scripts')
+<script src="/jquerycase/jquery.js"></script>
+<script>
+    $(document).ready(function(){
 
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $(function () {
+        // Toggle sidebar
         $('.menu-toggle').on('click', function () {
-          $('#wrapper').toggleClass('toggled');
+            $('#wrapper').toggleClass('toggled');
         });
 
+        // Active nav link
         $('.nav-links a').on('click', function () {
-          $('.nav-links a').removeClass('active');
-          $(this).addClass('active');
+            $('.nav-links a').removeClass('active');
+            $(this).addClass('active');
         });
-      });
-      document.addEventListener('DOMContentLoaded', function() {
-          // Select the success alert
-        var alert = document.querySelector('.alert');
-        
-        // Show the alert
-        if (alert) {
-            alert.style.display = 'block';
-            
-            // Hide the alert after 3 seconds
-            setTimeout(function() {
-                alert.style.display = 'none';
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
-      });
-    })
-    
 
-  </script>
+        // Auto-hide success alert
+        var alert = $('.alert');
+        if (alert.length) {
+            alert.show();
+            setTimeout(function() {
+                alert.fadeOut();
+            }, 3000); // 3 seconds
+        }
+
+    });
+</script>
+@endpush
+  
 </body>
 </html>
