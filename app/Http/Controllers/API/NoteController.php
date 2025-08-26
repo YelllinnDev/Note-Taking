@@ -122,12 +122,11 @@ class NoteController extends Controller
            $validated = $request->validate([
                 'title' => 'required|string',
                 'description' => 'required|string|max:255',
-                'date' => 'required|date_format:Y-m-d',
+                'date' => 'nullable|date_format:Y-m-d',
             ], [
                 'title.required' => 'Title is required.',
                 'title.string' => 'Title must be a string.',
                 'description.required' => 'description is required.',
-                'date.required' => 'Date is required.',
             ]);
             $note = Note::create([
                 'title' => $validated['title'],
@@ -158,7 +157,7 @@ class NoteController extends Controller
            $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|string|nullable',
-                'date' => 'required|date_format:Y-m-d',
+                'date' => 'sometimes|date_format:Y-m-d|nullable',
             ], [
                 'title.string' => 'Title must be a string.',
                 'date.date' => 'Date must be a valid date.(YYYY-MM-DD)',
