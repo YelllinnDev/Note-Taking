@@ -3,6 +3,23 @@
 ## 2025-08-26 API Up and Running on Production
 
 
+
+### Errors
+
+```bash
+No application encryption key has been specified.
+
+# setup code မှာ 
+php artisan key:generate 
+# ထည့်ပေးရန်။
+```
+
+git clean -f -d
+
+
+
+
+
 php artisan passport:install
 
 
@@ -36,6 +53,8 @@ php artisan passport:keys --force
 
 ```bash
 composer install
+
+php artisan key:generate 
 
 php artisan migrate:fresh
 
