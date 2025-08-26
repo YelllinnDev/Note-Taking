@@ -1,5 +1,12 @@
 # Note Taking Project
 
+## 2025-08-26 API Up and Running on Production
+
+
+php artisan passport:install
+
+
+
 ## 2025-07-28 Test up and running
 
 
@@ -11,6 +18,10 @@
 - [x] note create
 - [x] note update
 - [x] note delete
+
+
+
+### Passport က အကြိမ်တိုင်းမှာ ပြဿနာ။
 
 
 php artisan passport:keys
