@@ -13,6 +13,10 @@
 - [x] note delete
 
 
+
+### Passport က အကြိမ်တိုင်းမှာ ပြဿနာ။
+
+
 php artisan passport:keys
 
 
