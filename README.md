@@ -7,11 +7,14 @@
 ### Errors
 
 ```bash
-No application encryption key has been specified.
+## No application encryption key has been specified.
 
 # setup code မှာ 
 php artisan key:generate 
 # ထည့်ပေးရန်။
+
+## personal client access not found
+php artisan passport:client --personal
 ```
 
 git clean -f -d
