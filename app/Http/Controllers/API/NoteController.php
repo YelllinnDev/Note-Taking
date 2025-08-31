@@ -12,7 +12,8 @@ use App\Http\Controllers\Controller;
 
 class NoteController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         // $user  = get_authenticated_user();
         // if ($user instanceof \Illuminate\Http\JsonResponse) {
         //     return $user;
@@ -25,10 +26,6 @@ class NoteController extends Controller
             ], [
                 'date.date' => 'Date must be a valid date.YYYY-MM-DD',
         ]);
-
-        
-
-        // TODO: return validation error detail
 
         $perPage = 2;
         $page = $request->input('page', 1);
@@ -76,14 +73,16 @@ class NoteController extends Controller
         ]);
 
     }
-    public function detail(Request $request, $id){
+    public function detail(Request $request, $id)
+    {
         $usercase = Auth::user();
+        
         $user=$usercase->id;
-        $perPage = 2;
+        
+        $perPage = 20;
         $page = $request->input('page', 1);
         $query = Note::where('id', $id)
                         ->where('user_id', $user);
-                        // ->firstOrFail();
         if(!$query->exists()){
             return response()->json([
                 'message' => 'No notes found for this user.'
@@ -107,7 +106,6 @@ class NoteController extends Controller
     }
     public function store(Request $request)
     {
-        
         $usercase = Auth::user();
         $user=$usercase->id;
         $role=$usercase->role_id;
@@ -121,7 +119,7 @@ class NoteController extends Controller
         try {
            $validated = $request->validate([
                 'title' => 'required|string',
-                'description' => 'required|string|max:255',
+                'description' => 'nullable|string',
                 'date' => 'nullable|date_format:Y-m-d',
             ], [
                 'title.required' => 'Title is required.',

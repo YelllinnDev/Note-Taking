@@ -69,7 +69,8 @@ class NoteController extends Controller
             ]);
            
             session()->flash('success', 'Note created successfully.');
-            return redirect()->route('notes.index');
+            return redirect()->route('notes.index')
+                            ->with('success', 'Note created successfully.');
 
         } catch (\Exception $e) {
             // Flash error message if something fails
