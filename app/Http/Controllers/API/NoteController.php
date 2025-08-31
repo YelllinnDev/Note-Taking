@@ -14,10 +14,6 @@ class NoteController extends Controller
 {
     public function index(Request $request)
     {
-        // $user  = get_authenticated_user();
-        // if ($user instanceof \Illuminate\Http\JsonResponse) {
-        //     return $user;
-        // }
         $user = Auth::user();
         $validated = $request->validate([
                 'title' => 'sometimes|string',
@@ -107,7 +103,7 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $usercase = Auth::user();
-        $user=$usercase->id;
+        $user_id=$usercase->id;
         $role=$usercase->role_id;
         if($role==1){
             return response()->json([
@@ -126,12 +122,10 @@ class NoteController extends Controller
                 'title.string' => 'Title must be a string.',
                 'description.required' => 'description is required.',
             ]);
-            $note = Note::create([
-                'title' => $validated['title'],
-                'description' => $validated['description'],
-                'user_id' => $user,
-                'date' => $validated['date'],
-            ]);
+
+            $note = Note::create(array_merge($validated, [
+                        'user_id' => $user_id,
+                    ]));
 
             return response()->json([
                 'message' => 'Note is created successfully!',
