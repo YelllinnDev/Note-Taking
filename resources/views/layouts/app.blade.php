@@ -6,7 +6,9 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>@yield('title', 'Dashboard') | {{ config('app.name', 'Laravel') }}</title>
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <script src="{{ asset('js/app.js') }}"></script>
+  <script src="{{ asset('app-assets/jquery.min.js') }}"></script>
 
   <style>
     :root {
@@ -34,8 +36,8 @@
       display: flex;
       min-height: 100vh;
       background: var(--background);
+      position:relative;
     }
-
     /* Sidebar */
     #sidebar-wrapper {
       width: 250px;
@@ -98,6 +100,10 @@
       align-items: center;
       border-bottom: 1px solid #e5e7eb;
     }
+    .meCls{
+      width:30px;
+      height:30px;
+    }
     .menu{
       width:50px;
       height:50px;
@@ -152,7 +158,7 @@
         display: block;
       }
 
-      /* #sidebar-wrapper {
+      #sidebar-wrapper {
         position: absolute;
         left: 0;
         top: 0;
@@ -161,9 +167,9 @@
         box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       } */
 
-      /* #wrapper.toggled #sidebar-wrapper {
+      #wrapper.toggled #sidebar-wrapper {
         left: 0;
-      } */
+      }
     }
     .alert{
       position:fixed;
@@ -194,7 +200,7 @@
     .pagination {
         margin-top: 20px;
         display: flex;
-        justify-content: flex-end;  /* Align to the right */
+        justify-content: flex-end;  
         gap: 10px; /* Adds space between pagination links */
     }
 
@@ -243,9 +249,13 @@
   <div id="wrapper">
     <!-- Display success message -->
         @if(session('success'))
-            <div class="alert success">
+        <script>
+          alert("success")
+        </script>
+         
+            <!-- <div class="alertbox success">
                 {{ session('success') }}
-            </div>
+            </div> -->
         @endif
 
         <!-- Display error message -->
@@ -281,6 +291,9 @@
     <div id="page-content-wrapper">
       <!-- Top Bar -->
       <div class="topbar">
+        <dvi class="menuCls">
+          <img src="{{ asset('images/note.png') }}" alt="" class="meCls">
+        </dvi>
         <div class="user-info">
           <img src="https://i.pravatar.cc/40" alt="User Avatar">
           <span>{{ Auth::user()->name ?? 'Guest' }}</span>
@@ -300,7 +313,6 @@
     </div>
   </div>
 @push('scripts')
-<script src="/jquerycase/jquery.js"></script>
 <script>
     $(document).ready(function(){
 
