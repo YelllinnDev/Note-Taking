@@ -126,10 +126,10 @@ class NoteController extends Controller
                 'title.string' => 'Title must be a string.',
             ]);
             $note = Note::create([
-                'title' => $validated['title'],
-                'description' => $validated['description'],
+                'title' => $validated['title']?? null,
+                'description' => $validated['description']?? null,
                 'user_id' => $user,
-                'date' => $validated['date'],
+                'date' => $validated['date']?? null,
             ]);
 
             return response()->json([

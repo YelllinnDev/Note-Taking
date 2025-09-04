@@ -13,7 +13,6 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        dd($request);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email',
@@ -52,8 +51,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        dd($credentials);
-        die;
         if(Auth::attempt($credentials)){
             $user = User::where('email', $credentials['email'])
                         ->first();
