@@ -34,7 +34,7 @@ class NoteController extends Controller
         }
         
          if (isset($validated['title'])) {
-            $query->where('title', $validated['title']);
+            $query->where('title','like', "%{$validated['title']}%");
         }
         if (isset($validated['description'])) {
             $query->where('description', $validated['description']);
@@ -44,8 +44,9 @@ class NoteController extends Controller
             $query->where('date', $validated['date']);
         }
 
-        $note = $query->orderBy('id', 'DESC')->paginate($perPage);
-        return view('notes.index', ['notes' => $note]);
+        $notes = $query->orderBy('id', 'DESC')->paginate($perPage);
+        $src   = $validated['title'];
+        return view('notes.index', compact('notes','src'));
     }
     public function store(Request $request)
     {
@@ -84,7 +85,7 @@ class NoteController extends Controller
             $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|string|nullable',
-                'date' => 'required|date_format:Y-m-d',
+                'date' => 'sometimes|date_format:Y-m-d',
             ], [
                 'title.string' => 'Title must be a string.',
                 'date.date' => 'Date must be a valid date.(YYYY-MM-DD)',
@@ -117,7 +118,7 @@ class NoteController extends Controller
         $note = Note::findOrFail($id);
         
         // Return the edit view and pass the user data to it
-        return view('notes.edit', compact('note'));
+        return view('notes.edit',compact('note'));
     }
     public function destroy($id)
     {
@@ -132,5 +133,9 @@ class NoteController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('notes.index')->with('error', 'Failed to delete note. Please try again.');
         }
+    }
+    public function createForm()
+    {
+        return view('notes.create');
     }
 }

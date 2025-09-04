@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
     
     Route::delete('/users/{id}', [AuthController::class, 'destroy'])->name('users.destroy');
 
+    Route::post('/users/{id}', [AuthController::class, 'destroy'])->name('users.destroy');
+
     Route::get('/users', [AuthController::class, 'index'])->name('users.index');
 
     Route::get('users/{id}/edit', [AuthController::class, 'edit'])->name('users.edit');
@@ -48,15 +50,13 @@ Route::middleware('auth')->group(function () {
     
 
     // notes case
-    Route::get('/notes/create', function () {
-    return view('notes.create');
-    })->middleware(['auth', 'verified'])->name('notes.create');
-
+    Route::get('/notes/create', [NoteController::class, 'createForm'])->name('notes.create');
     Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
     Route::post('/notes/create', [NoteController::class, 'store'])->name('notes.create');
     Route::get('notes/{id}/edit', [NoteController::class, 'edit'])->name('notes.edit');
     Route::put('/notes/{id}', [NoteController::class, 'update'])->name('notes.update');
     Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->name('notes.destroy');
+    Route::post('/notes/{id}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
 
 

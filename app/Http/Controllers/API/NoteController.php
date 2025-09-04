@@ -118,9 +118,7 @@ class NoteController extends Controller
                 'description' => 'nullable|string',
                 'date' => 'nullable|date_format:Y-m-d',
             ], [
-                'title.required' => 'Title is required.',
-                'title.string' => 'Title must be a string.',
-                'description.required' => 'description is required.',
+                'title.string' => 'Title must be a string.'
             ]);
 
             $note = Note::create(array_merge($validated, [
