@@ -1,332 +1,164 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <title>@yield('title', 'Dashboard') | {{ config('app.name', 'Laravel') }}</title>
-  <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-  <style>
-    :root {
-      --primary: #4F46E5;
-      --secondary: #F1F5F9;
-      --text: #1F2937;
-      --background: #F9FAFB;
-      --sidebar-bg: #ffffffcc;
-      --card-bg: #ffffffb3;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--background);
-      color: var(--text);
-    }
-
-    #wrapper {
-      display: flex;
-      min-height: 100vh;
-      background: var(--background);
-    }
-
-    /* Sidebar */
-    #sidebar-wrapper {
-      width: 250px;
-      background: var(--sidebar-bg);
-      backdrop-filter: blur(10px);
-      border-right: 1px solid #e2e8f0;
-      transition: all 0.3s ease;
-      z-index: 999;
-      min-width:200px;
-    }
-
-    .sidebar-heading {
-      height:50px;
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-      border-bottom: 1px solid #e5e7eb;
-      color: var(--primary);
-      display:flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .nav-links a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 20px;
-      color: #374151;
-      text-decoration: none;
-      border-bottom: 1px solid #f1f1f1;
-      transition: 0.3s;
-    }
-
-    .nav-links a:hover {
-      background-color: var(--secondary);
-      color: var(--primary);
-    }
-
-    .nav-links a.active {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    .nav-links  img{
-      width:25px;
-      height:25px;
-    }
-    /* Page Content */
-    #page-content-wrapper {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .topbar {
-      background-color: #fff;
-      height:50px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .menu{
-      width:50px;
-      height:50px;
-    }
-    .menu-toggle {
-      font-size: 24px;
-      cursor: pointer;
-      /* display: none; */
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-right:15px;
-    }
-
-    .user-info img {
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-    }
-
-    .user-info span {
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    button.logout-btn {
-      background: none;
-      border: none;
-      color:var(--background);
-      cursor: pointer;
-      font-size: 14px;
-      padding:8px;
-      border-radius: 5px;
-      transition:0.5s;
-      background-color: #e03636ff;
-    }
-     button.logout-btn:hover{
-      background-color: #f80b0bff;
-     }
-
-    .main-content {
-      padding: 30px;
-      flex-grow: 1;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block;
-      }
-
-      /* #sidebar-wrapper {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width:150px;
-        height: 100%;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      } */
-
-      /* #wrapper.toggled #sidebar-wrapper {
-        left: 0;
-      } */
-    }
-    .alert{
-      position:fixed;
-      bottom:20px;
-      right:10px;
-      z-index:1000;
-      height:40px;
-      border-radius:8px;
-      display:flex;
-      justify-content: center;
-      align-items: center;
-      color:#f1f1f1;
-      padding:5px;
-    }
-    .success{
-      background-color: green;
-    }
-    .danger{
-      background-color:red;
-    }
-    
-    nav{
-        width:100% !important;
-        display:flex !important;
-        justify-content: space-between !important;
-    }
-
-    .pagination {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;  /* Align to the right */
-        gap: 10px; /* Adds space between pagination links */
-    }
-
-    /* Pagination Links Styling */
-    .pagination .page-link {
-        padding: 8px 14px;
-        background: white;
-        border: 1px solid #ddd;
-        color: #333;
-        border-radius: 6px;
-        text-decoration: none;
-        transition: 0.2s ease;
-    }
-
-    /* Pagination Links Hover Effect */
-    .pagination .page-link:hover {
-        background-color: #f0f0f0;
-        color: #333;
-    }
-
-    /* Active Pagination Link Styling */
-    .pagination .active .page-link {
-        background-color: #4f46e5;  /* Blue color */
-        color: white;
-        border-color: #4f46e5;
-    }
-
-    /* Disabled Link (Previous/Next) Styling */
-    .pagination .disabled .page-link {
-        background-color: #f9f9f9;
-        color: #ddd;
-        cursor: not-allowed;
-    }
-    ul li::marker, ol li::marker {
-        all: unset; /* Reset all inherited styles */
-    }
-    .small{
-      display: none !important;
-    }
-    .page-item{
-      list-style: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Note</title>
+    <link rel="stylesheet" href="{{ asset('css/native.css') }}">
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
 </head>
 <body>
-  <div id="wrapper">
-    <!-- Display success message -->
-        @if(session('success'))
-            <div class="alert success">
-                {{ session('success') }}
+    @if(session('success'))
+    <div class="coverBlk" id="alertBox">
+        <div class="delalertBlk">
+            <img src="img/check.png" alt="" class="delalertImg successImg">
+            <p class="warningText successText">Note successfully inserted!</p>
+            <div class="detBtnBlk">
+                <button type="button" class="delcomCls alertOk">Ok</button>
             </div>
-        @endif
-
-        <!-- Display error message -->
-        @if(session('error'))
-            <div class="alert danger">
-                {{ session('error') }}
-            </div>
-        @endif
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-      <div class="sidebar-heading">
-        {{ config('app.name', 'Laravel') }}
-      </div>
-      <div class="nav-links">
-        <a href="{{ route('dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">
-          <img src="{{ asset('images/dash.png') }}" alt=""> Dashboard
-        </a>
-        @auth
-          @if (auth()->check() && auth()->user()->role_id === 1)
-                <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">
-                  <img src="{{ asset('images/user.png') }}" alt=""> Users
-                </a>
-          @endif
-        @endauth
-        
-        <a href="{{ route('notes.index') }}" class="{{ request()->is('notes*') ? 'active' : '' }}">
-          <img src="{{ asset('images/note.png') }}" alt=""> Notes
-        </a>
-      </div>
-    </div>
-
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
-      <!-- Top Bar -->
-      <div class="topbar">
-        <div class="user-info">
-          <img src="https://i.pravatar.cc/40" alt="User Avatar">
-          <span>{{ Auth::user()->name ?? 'Guest' }}</span>
-          @auth
-          <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit" class="logout-btn">Logout</button>
-          </form>
-          @endauth
         </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="main-content">
-        @yield('content')
-      </div>
     </div>
-  </div>
-@push('scripts')
-<script src="/jquerycase/jquery.js"></script>
-<script>
-    $(document).ready(function(){
-
-        // Toggle sidebar
-        $('.menu-toggle').on('click', function () {
-            $('#wrapper').toggleClass('toggled');
-        });
-
-        // Active nav link
-        $('.nav-links a').on('click', function () {
-            $('.nav-links a').removeClass('active');
-            $(this).addClass('active');
-        });
-
-        // Auto-hide success alert
-        var alert = $('.alert');
-        if (alert.length) {
-            alert.show();
-            setTimeout(function() {
-                alert.fadeOut();
-            }, 3000); // 3 seconds
-        }
-
-    });
-</script>
-@endpush
-  
+    @endif
+    @if(session('error'))
+    @endif
+    <div class="mainblock">
+        <!-- deleteComfirmation -->
+        <div class="coverBlk alertcase" id="deleteComfirm">
+            <div class="delalertBlk">
+                <img src="{{ asset('img/exclamation.png') }}" alt="" class="delalertImg">
+                <p class="warningText">Are you sure!</p>
+                <div class="detBtnBlk">
+                    <input type="hidden" name="" id="delvalId" data-idcase="" data-roucase="">
+                    <button type="button" class="delcomCls delbth">Yes</button>
+                    <button type="button" class="delcomCls delcanCls">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <!-- end Delete -->
+        <!-- alertBox -->
+        <div class="coverBlk alertcase" id="alertBox">
+            <div class="delalertBlk deleteBlk">
+                <img src="{{ asset('img/check.png') }}" alt="" class="delalertImg successImg">
+                <p class="warningText successText">Successfully!</p>
+            </div>
+        </div>
+        <!-- end aler box -->
+        <div class="topvar">
+            <img src="{{ asset('img/favicon.png') }}" alt="" class="logoCls">
+            <p class="logoText">Welcome, Note Taking!</p>
+            <div class="topActionBlk">
+                <div class="setBlk">
+                    <img src="{{ asset('img/setting.png') }}" alt="" class="settingCls" id="setId">
+                    <div class="proLoBlk" id="prolog">
+                        <ul>
+                            <li>
+                                <a href="#">
+                                    <img src="{{ asset('img/user.png') }}" alt="" class="setImg">
+                                    <button type="button">Profile</button> 
+                                </a>
+                                
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <a href="#">
+                                        <img src="{{ asset('img/switch.png') }}" alt="" class="setImg">
+                                        <button type="submit">Logout</button>
+                                    </a>
+                                    
+                                    
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bodyBlock">
+            @yield('content')
+        </div>
+    </div>
 </body>
 </html>
+
+<script>
+    $(document).ready(function(){
+        $(document).on("click","#setId",function(){
+            $("#prolog").toggleClass("show");
+        })
+        $(document).on("click",".canCls, .cancleBtn",function(){
+            $("#noteCreate, #noteEdit, #deleteComfirm, #userCreate, #userEdit").removeClass("show");
+        })
+        $(document).on("click",".delcanCls",function(){
+            $("#delvalId").attr("data-idcase","");
+            $("#delvalId").attr("data-roucase","");
+            $("#deleteComfirm").removeClass("show");
+        })
+        $(document).on("click",".alertOk",function(){
+            $("#alertBox").removeClass("show");
+        });
+        $(document).on("click",".logoCls",function(){
+            $("#alertBox").addClass("show");
+        });
+        $(document).on("click",".userEditCls",function(){
+            $("#userEdit").addClass("show");
+        });
+        $(document).on("click","#newUser",function(){
+            $("#userCreate").addClass("show");
+        });
+       
+        $('.eyeCls').on('click', function() {
+            const passwordField = $(this).siblings(".inputCls"); // Removed space from class selector
+            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+
+            // Change text or icon based on type
+            $(this).text(type === 'password' ? 'Show' : 'Hide');
+        });
+        $(document).on("click",".noteDeleteCls, .userDeleteCls",function(){
+            const idcase=$(this).data("id");
+            const roucase=$(this).data("roucase");
+
+            $("#delvalId").attr("data-idcase",idcase);
+            $("#delvalId").attr("data-roucase",roucase);
+            $("#deleteComfirm").addClass("show");
+        });
+        $(document).on("click", ".delbth", function() {
+            $("#deleteComfirm").removeClass("show");
+            const id = $(this).siblings().data("idcase");
+            const roucase = $(this).siblings().data("roucase");
+            console.log(id);
+            console.log(roucase);
+            const routercase=`/${roucase}/${id}`;
+            deletecase(id, routercase, roucase, ".successText");
+        });
+
+        function deletecase(id, routercase,rouname, uiID) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(routercase, {
+                method: 'POST', // using method spoofing
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ _method: 'DELETE' }) // 👈 spoof delete
+            })
+            .then(res => res.text()) // you'll get the redirected HTML
+            .then(html => {
+                // replace page content or just reload
+                if(rouname ==`users`){
+                    window.location.href = '/users';
+                    $("#alertBox").addClass("show");
+                }else{
+                    window.location.href = '/notes';
+                    $("#alertBox").addClass("show");
+                }
+                  // force redirect like normal
+            });
+        }
+
+        
+    })
+</script>

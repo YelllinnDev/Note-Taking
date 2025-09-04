@@ -21,7 +21,7 @@ class AuthController extends Controller
             'email' => 'sometimes|email',
         ]);
         
-        $perPage = 10;
+        $perPage = 15;
         $query = User::select('id','name', 'email', 'role_id', 'created_at')
                     ->with('role'); 
         if (isset($validated['name'])) {
@@ -31,7 +31,18 @@ class AuthController extends Controller
             $query->where('email', 'like', '%' . $validated['email'] . '%');
         }
         $note = $query->orderBy('id', 'DESC')->paginate($perPage);
-        return view('users.index', ['users' => $note]);
+        $total    =   User::count();
+        $totalAdmins    =   User::where('role_id', '1')->count();
+        $totalUsers     =   User::where('role_id', '2')->count();
+        $totalNotes     =   Note::count();
+        $src=$validated['name']?? '';
+        return view('users.index', ['users' => $note,
+                                    'admin'=>$totalAdmins,
+                                    'user'=>$totalUsers,
+                                    'note'=>$totalNotes,
+                                    'account'=>$total,
+                                    'src'=>$src
+                                    ]);
     }
     public function edit(Request $request, $id){
             // Find the user by ID or fail if not found
@@ -117,9 +128,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed
-            return redirect()->route('dashboard');
+        // Authentication passed
+
+        if (Auth::user()->role_id == 1) {
+            return redirect()->route('users.index');
         }
+
+        return redirect()->route('notes.index');
+    }
 
         // Authentication failed
         return redirect()->back()
