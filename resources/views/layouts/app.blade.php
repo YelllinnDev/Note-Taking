@@ -83,6 +83,9 @@
 </body>
 </html>
 
+
+@push('scripts')
+
 <script>
     $(document).ready(function(){
         $(document).on("click","#setId",function(){

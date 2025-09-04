@@ -12,11 +12,8 @@ use App\Http\Controllers\Controller;
 
 class NoteController extends Controller
 {
-    public function index(Request $request){
-        // $user  = get_authenticated_user();
-        // if ($user instanceof \Illuminate\Http\JsonResponse) {
-        //     return $user;
-        // }
+    public function index(Request $request)
+    {
         $user = Auth::user();
         $validated = $request->validate([
                 'title' => 'sometimes|string',
@@ -25,10 +22,6 @@ class NoteController extends Controller
             ], [
                 'date.date' => 'Date must be a valid date.YYYY-MM-DD',
         ]);
-
-        
-
-        // TODO: return validation error detail
 
         $perPage = 2;
         $page = $request->input('page', 1);
@@ -76,14 +69,16 @@ class NoteController extends Controller
         ]);
 
     }
-    public function detail(Request $request, $id){
+    public function detail(Request $request, $id)
+    {
         $usercase = Auth::user();
+        
         $user=$usercase->id;
-        $perPage = 2;
+        
+        $perPage = 20;
         $page = $request->input('page', 1);
         $query = Note::where('id', $id)
                         ->where('user_id', $user);
-                        // ->firstOrFail();
         if(!$query->exists()){
             return response()->json([
                 'message' => 'No notes found for this user.'
@@ -108,7 +103,7 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $usercase = Auth::user();
-        $user=$usercase->id;
+        $user_id=$usercase->id;
         $role=$usercase->role_id;
         if($role==1){
             return response()->json([
@@ -120,17 +115,15 @@ class NoteController extends Controller
         try {
            $validated = $request->validate([
                 'title' => 'required|string',
-                'description' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
                 'date' => 'nullable|date_format:Y-m-d',
             ], [
-                'title.string' => 'Title must be a string.',
+                'title.string' => 'Title must be a string.'
             ]);
-            $note = Note::create([
-                'title' => $validated['title']?? null,
-                'description' => $validated['description']?? null,
-                'user_id' => $user,
-                'date' => $validated['date']?? null,
-            ]);
+
+            $note = Note::create(array_merge($validated, [
+                        'user_id' => $user_id,
+                    ]));
 
             return response()->json([
                 'message' => 'Note is created successfully!',
@@ -154,7 +147,7 @@ class NoteController extends Controller
            $validated = $request->validate([
                 'title' => 'sometimes|string',
                 'description' => 'sometimes|string|nullable',
-                'date' => 'sometimes|date_format:Y-m-d',
+                'date' => 'sometimes|date_format:Y-m-d|nullable',
             ], [
                 'title.string' => 'Title must be a string.',
                 'date.date' => 'Date must be a valid date.(YYYY-MM-DD)',
